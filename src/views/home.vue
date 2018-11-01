@@ -4,7 +4,7 @@
         <el-row>
           <el-col :span="4">
             <div class="grid-content bg-purple">
-              <img src="/static/logo.png" alt="">
+              <img src="../assets/logo.png">
             </div>
           </el-col>
           <el-col :span="19" class="middle">
@@ -12,7 +12,7 @@
           </el-col>
           <el-col :span="1">
               <!-- 绑定用户退出的事件 -->
-              <a href="#"  class="loginout" @click.prevent="handleSignout">退出</a>
+              <a href="#" class="loginout" @click.prevent="handleSignout">退出</a>
           </el-col>
         </el-row>
     </el-header>
@@ -92,6 +92,10 @@
         </el-submenu>
         </el-menu>
       </el-aside>
+      <el-main class="main">
+        <!--视图容器 -->
+        <router-view></router-view>
+      </el-main>
     </el-container>
   </el-container>
 </template>
@@ -112,6 +116,23 @@ export default {
 </script>
 
 <style>
+.container {
+  height: 100%;
+}
+
+.header {
+  background-color: #b3c0d1;
+}
+
+.aside {
+  background-color: #d3dce6;
+}
+
+.main {
+  background-color: #e9eef3;
+  /* height: 100%; */
+}
+/* 头部样式 */
 .header .middle{
     line-height: 60px;
     color: #fff;
