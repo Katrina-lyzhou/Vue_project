@@ -10,10 +10,14 @@
     <!-- 搜索框 -->
     <el-row class="searchArea">
       <el-col :span="24">
-           <el-input class="searchInput" clearable placeholder="请输入内容">
-            <el-button slot="append" icon="el-icon-search"></el-button>
+        <!-- 需要获取搜索框内的数据 -->
+           <el-input class="searchInput" clearable placeholder="请输入内容"
+           v-model="searchVal">
+           <!-- 绑定点击事件,触发搜索 -->
+            <el-button slot="append" icon="el-icon-search"
+             @click="checkUser()"></el-button>
            </el-input>
-        <el-button type="success" plain>添加用户</el-button>
+        <el-button type="success">添加用户</el-button>
       </el-col>
     </el-row>
 
@@ -57,39 +61,55 @@
             </template>
           </el-table-column>
     </el-table>
-
+    <!-- 分页 -->
+    <el-pagination
+      @size-change="handleSizechange"
+      @current-change="handleCurrentChange"
+      :current-page="currentPage"
+      :page-sizes="[2,4,6,8]"
+      :page-size="pagesize"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total">
+    </el-pagination>
   </el-card>
 </template>
 <script>
 export default {
   data () {
     return {
-      // tableData: [{
-      //   date: '2016-05-02',
-      //   name: '王小虎',
-      //   address: '上海市普陀区金沙江路 1518 弄'
-      // }, {
-      //   date: '2016-05-04',
-      //   name: '王小虎',
-      //   address: '上海市普陀区金沙江路 1517 弄'
-      // }, {
-      //   date: '2016-05-01',
-      //   name: '王小虎',
-      //   address: '上海市普陀区金沙江路 1519 弄'
-      // }, {
-      //   date: '2016-05-03',
-      //   name: '王小虎',
-      //   address: '上海市普陀区金沙江路 1516 弄'
-      // }]
       list: [],
       // 添加加载动画
-      loading: true
+      loading: true,
+      // 声明分页的相关的变量
+      pagenum:1,
+      pagesize:2,
+      currentPage: 1,
+      total: 0,
+      // 获取用户列表的搜索值
+      searchVal: ''
     }
   },
   created () {
     this.loadTableData()
   },
   methods: {
+    // 用户搜索的事件调用
+    checkUser () {
+      this.loadTableData()
+    },
+    // 分页的相关方法
+    // 1.每页多少数据的变化的变化
+    handleSizechange(val) {
+     console.log(`每页 ${val}条`)
+     this.pagesize = val
+     this.loadTableData()
+    },
+    // 2.翻页的变化
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`)
+      this.pagenum = val
+      this.loadTableData()
+    },
     async loadTableData () {
       // 在发送请求之前,转圈
       this.loading = true
@@ -97,9 +117,14 @@ export default {
       //  header添加token
       const AUTH_TOKEN = sessionStorage.getItem('token')
       this.$http.defaults.headers.common['Authorization'] = AUTH_TOKEN
-      const res = await this.$http.get(`users?pagenum=1&pagesize=10`)
-      console.log(res)
-      const {meta:{msg, status}, data:{users}} = res.data
+      const res = await this.$http.get(`users?pagenum=${this.pagenum}&pagesize=${this.pagesize}&query=${
+          this.searchVal}`)
+      // console.log(res)
+      this.total = res.data.data.total
+      const {
+        meta: {msg, status}, 
+        data: {users}
+        } = res.data
       if (status === 200) {
         // 如果请求成功以后不加载
         this.loading = false
