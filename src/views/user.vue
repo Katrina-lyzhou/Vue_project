@@ -18,44 +18,43 @@
     </el-row>
 
     <!-- 表格 -->
+     <!-- 添加加载动画loading -->
        <el-table
+          v-loading="loading"
           :data="list"
           style="width: 100%">
           <!-- 序号 -->
-          <el-table-column
-          type="index"
-          label="#"
-          width="100">
+          <el-table-column type="index" label="#" width="100">
           </el-table-column>
-          <el-table-column
-            prop="username"
-            label="姓名"
-            width="80">
+          <el-table-column prop="username" label="姓名" width="80">
           </el-table-column>
-          <el-table-column
-            prop="email"
-            label="邮箱"
-            width="180">
+          <el-table-column prop="email" label="邮箱" width="180">
           </el-table-column>
-          <el-table-column
-            prop="moblie"
-            label="电话"
-            width="180">
+          <el-table-column prop="moblie" label="电话" width="180">
           </el-table-column>
-          <el-table-column
-            prop="date_time"
-            label="创建日期"
-            width="180">
+          <el-table-column label="创建日期" width="180">
+            <template slot-scope="scope">
+              {{scope.row.create_time | fmtDate}}
+            </template>
           </el-table-column>
-          <el-table-column
-            prop="mg_state"
-            label="用户状态"
-            width="180">
+          <el-table-column prop="mg_state" label="用户状态" width="180">
+            <!-- 单元格内容不是字符串的时候,如果是其他 组件比如是开关,需要在组件的外面加一个容器,名字叫template -->
+            <template slot-scope ="scope">
+              <!-- slot-scope是用来传值的,scope是随便命名的 -->
+              <!-- scope是list scope.row是list中的每一个元素,这里i是{} -->
+                <el-switch
+                  v-model="scope.row.mg_state"
+                  active-color="#13ce66"
+                  inactive-color="#ff4949">
+                </el-switch>
+            </template>  
           </el-table-column>
-          <el-table-column
-            prop="date"
-            label="操作"
-            width="300">
+          <el-table-column prop="date" label="操作" width="300">
+            <template slot-scope="scope">
+              <el-button type="primary" icon="el-icon-edit" size="mini" circle></el-button>
+              <el-button type="danger" icon="el-icon-delete" size="mini" circle></el-button>
+              <el-button type="success" icon="el-icon-check" size="mini" circle></el-button> 
+            </template>
           </el-table-column>
     </el-table>
 
@@ -82,7 +81,9 @@ export default {
       //   name: '王小虎',
       //   address: '上海市普陀区金沙江路 1516 弄'
       // }]
-      list: []
+      list: [],
+      // 添加加载动画
+      loading: true
     }
   },
   created () {
@@ -90,6 +91,7 @@ export default {
   },
   methods: {
     async loadTableData () {
+      // 在发送请求之前,转圈
       this.loading = true
       //  除啦登陆功能,其他功能的接口都穾加入token 才能请求
       //  header添加token
@@ -99,6 +101,8 @@ export default {
       console.log(res)
       const {meta:{msg, status}, data:{users}} = res.data
       if (status === 200) {
+        // 如果请求成功以后不加载
+        this.loading = false
         this.list = users
         console.log(this.list)
       }
