@@ -19,28 +19,44 @@
 
     <!-- 表格 -->
        <el-table
-      :data="tableData"
-      style="width: 100%">
-      <!-- 序号 -->
-      <el-table-column
-      type="index"
-      width="50">
-    </el-table-column>
-
-      <el-table-column
-        prop="date"
-        label="日期"
-        width="180">
-      </el-table-column>
-      <el-table-column
-        prop="name"
-        label="姓名"
-        width="180">
-      </el-table-column>
-      <el-table-column
-        prop="address"
-        label="地址">
-      </el-table-column>
+          :data="list"
+          style="width: 100%">
+          <!-- 序号 -->
+          <el-table-column
+          type="index"
+          label="#"
+          width="100">
+          </el-table-column>
+          <el-table-column
+            prop="username"
+            label="姓名"
+            width="80">
+          </el-table-column>
+          <el-table-column
+            prop="email"
+            label="邮箱"
+            width="180">
+          </el-table-column>
+          <el-table-column
+            prop="moblie"
+            label="电话"
+            width="180">
+          </el-table-column>
+          <el-table-column
+            prop="date_time"
+            label="创建日期"
+            width="180">
+          </el-table-column>
+          <el-table-column
+            prop="mg_state"
+            label="用户状态"
+            width="180">
+          </el-table-column>
+          <el-table-column
+            prop="date"
+            label="操作"
+            width="300">
+          </el-table-column>
     </el-table>
 
   </el-card>
@@ -49,23 +65,24 @@
 export default {
   data () {
     return {
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }]
+      // tableData: [{
+      //   date: '2016-05-02',
+      //   name: '王小虎',
+      //   address: '上海市普陀区金沙江路 1518 弄'
+      // }, {
+      //   date: '2016-05-04',
+      //   name: '王小虎',
+      //   address: '上海市普陀区金沙江路 1517 弄'
+      // }, {
+      //   date: '2016-05-01',
+      //   name: '王小虎',
+      //   address: '上海市普陀区金沙江路 1519 弄'
+      // }, {
+      //   date: '2016-05-03',
+      //   name: '王小虎',
+      //   address: '上海市普陀区金沙江路 1516 弄'
+      // }]
+      list: []
     }
   },
   created () {
@@ -73,12 +90,18 @@ export default {
   },
   methods: {
     async loadTableData () {
+      this.loading = true
       //  除啦登陆功能,其他功能的接口都穾加入token 才能请求
       //  header添加token
       const AUTH_TOKEN = sessionStorage.getItem('token')
       this.$http.defaults.headers.common['Authorization'] = AUTH_TOKEN
-      const res = await this.$http.get('users?pagenum=1&pagesize=10')
+      const res = await this.$http.get(`users?pagenum=1&pagesize=10`)
       console.log(res)
+      const {meta:{msg, status}, data:{users}} = res.data
+      if (status === 200) {
+        this.list = users
+        console.log(this.list)
+      }
     }
   }
 }
