@@ -138,8 +138,7 @@
               @click="showEditBox(scope.row.id)"></el-button>
               <el-button type="danger" icon="el-icon-delete" size="mini" circle
               @click="showDeleBox(scope.row.id)"></el-button>
-              <el-button type="success" icon="el-icon-check" size="mini" circle
-              @click="showRoleBox(scope.row)"></el-button> 
+              <el-button type="success" icon="el-icon-check" size="mini" circle @click="showRoleBox(scope.row)"></el-button> 
             </template>
           </el-table-column>
     </el-table>

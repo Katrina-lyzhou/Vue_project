@@ -4,10 +4,11 @@ import Vue from 'vue'
 import moment from 'moment'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+import http from '@/plugin/http.js'
 import App from './App'
+import MyBread from '@/components/myBread'
 import router from './router'
 import '@/assets/css/style.css'
-import http from '@/plugin/http.js'
 
 Vue.use(ElementUI)
 Vue.use(http)
@@ -15,6 +16,8 @@ Vue.use(http)
 Vue.filter('fmtDate', function (v) {
   return moment(v).format('YYYY-MM-DD hh:mm:ss')
 })
+// 设置面包屑子组件(父子组件传值)
+Vue.component(MyBread.name, MyBread)
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
